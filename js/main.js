@@ -1,6 +1,6 @@
 'use strict';
 
-const init = () {
+const init = () => {
     const elm = getElementById('test');
     elm.innerHTML = 'Welcome to "leap.js."';
 
