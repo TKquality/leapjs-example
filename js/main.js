@@ -1,7 +1,7 @@
 'use strict';
 
 const init = () => {
-    const elm = getElementById('test');
+    const elm = document.getElementById('test');
     elm.innerHTML = 'Welcome to "leap.js."';
 
     const controller = new Leap.Controller({ enableGestures: true });
