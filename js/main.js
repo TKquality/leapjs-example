@@ -1,5 +1,7 @@
 'use strict';
 
+const FINGER_TYPE = ['thumb', 'index', 'middle', 'ring', 'pinky'];
+
 const extractFrameInfo = (frame, dispNode) => {
     const currentId = frame.id;
     const currentFrameRate = frame.currentFrameRate;
@@ -37,8 +39,20 @@ const extractHandInfo = (frame, dispNode) => {
 
     for (let i = 0, numHands = frame.hands.length; i < numHands; i++) {
         const targetChild = target.appendChild(document.createElement('div'));
-        targetChild.innerHTML = '[' + i + '] hand';
+        const hand = frame.hands[i];
+
+        let handText = '';
+        handText += 'id: ' + hand.id + ' ';
+        if (hand.valid) {
+            handText += 'type: ' + hand.type + ' ';
+            handText += 'palm 2D: ' + hand.stabilizedPalmPosition + ' ';
+            handText += 'direction: ' + hand.direction + ' ';
+        } else {
+            handText += 'this hand is invalid...';
+        }
+        targetChild.innerHTML = handText;
     }
+
 };
 
 const extractFingerInfo = (frame, dispNode) => {
@@ -50,10 +64,32 @@ const extractFingerInfo = (frame, dispNode) => {
         target.innerHTML = '';
     }
 
+    let currentHand;
     for (let i = 0, numFingers = frame.fingers.length; i < numFingers; i++) {
         const targetChild = target.appendChild(document.createElement('div'));
-        targetChild.innerHTML = '[' + i + '] finger';
+        const finger = frame.fingers[i];
+
+        let fingerText = '';
+        if (currentHand !== finger.hand()) {
+            currentHand = finger.hand();
+            if (i !== 0) {
+                fingerText += '<br />';
+            }
+            fingerText += currentHand.type + ' hand\'s finger' + '<br />';
+        }
+
+        fingerText += 'id: ' + finger.id + ' ';
+        fingerText += 'type: ' + FINGER_TYPE[finger.type] + ' ';
+        if (finger.valid) {
+            fingerText += 'palm 2D: ' + finger.stabilizedTipPosition + ' ';
+            fingerText += 'direction: ' + finger.direction + ' ';
+            fingerText += 'touch distance: ' + finger.touchDistance + ' ';
+        } else {
+            fingerText += 'this finger is invalid...';
+        }
+        targetChild.innerHTML = fingerText;
     }
+
 };
 
 const extractGestureInfo = (frame, dispNode) => {
