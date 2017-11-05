@@ -38,7 +38,6 @@ const extractHandInfo = (frame, dispNode) => {
     }
 
     for (let i = 0, numHands = frame.hands.length; i < numHands; i++) {
-        const targetChild = target.appendChild(document.createElement('div'));
         const hand = frame.hands[i];
 
         let handText = '';
@@ -50,6 +49,8 @@ const extractHandInfo = (frame, dispNode) => {
         } else {
             handText += 'this hand is invalid...';
         }
+
+        const targetChild = target.appendChild(document.createElement('div'));
         targetChild.innerHTML = handText;
     }
 
@@ -66,7 +67,6 @@ const extractFingerInfo = (frame, dispNode) => {
 
     let currentHand;
     for (let i = 0, numFingers = frame.fingers.length; i < numFingers; i++) {
-        const targetChild = target.appendChild(document.createElement('div'));
         const finger = frame.fingers[i];
 
         let fingerText = '';
@@ -87,6 +87,8 @@ const extractFingerInfo = (frame, dispNode) => {
         } else {
             fingerText += 'this finger is invalid...';
         }
+
+        const targetChild = target.appendChild(document.createElement('div'));
         targetChild.innerHTML = fingerText;
     }
 
@@ -102,9 +104,44 @@ const extractGestureInfo = (frame, dispNode) => {
     }
 
     for (let i = 0, numGestures = frame.gestures.length; i < numGestures; i++) {
+
+        const gesture = frame.gestures[i];
+        const gestureHand = (gesture.handIds.length > 0) ? frame.hand(gesture.handIds[0]) : null;
+        const gestureFinger = (gesture.pointableIds.length > 0) ? frame.finger(gesture.pointableIds[0]) : null;
+
+        let gestureText = '';
+        gestureText += 'type: ' + gesture.type + ' ';
+        if (gestureHand && gestureFinger) {
+            gestureText += 'source: ' + gestureHand.type + '-' + FINGER_TYPE[gestureFinger.type] + ' ';
+        }
+        gestureText += 'state: ' + gesture.state + ' ';
+        switch (gesture.type) {
+            case 'circle':
+                gestureText += 'center: ' + gesture.center + ' ';
+                gestureText += 'radius: ' + gesture.radius + ' ';
+                break;
+
+            case 'swipe':
+                gestureText += 'position: ' + gesture.position + ' ';
+                gestureText += 'direction: ' + gesture.direction + ' ';
+                gestureText += 'speed: ' + gesture.speed + ' ';
+                break;
+
+            case 'keyTap':
+                break;
+
+            case 'screenTap':
+                break;
+
+            default:
+                gestureText += 'unknown gesture';
+                break;
+        }
+
         const targetChild = target.appendChild(document.createElement('div'));
-        targetChild.innerHTML = '[' + i + '] gesture';
+        targetChild.innerHTML = gestureText;
     }
+
 };
 
 window.addEventListener('load', () => {
