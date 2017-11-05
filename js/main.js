@@ -1,6 +1,8 @@
 'use strict';
 
 const FINGER_TYPE = ['thumb', 'index', 'middle', 'ring', 'pinky'];
+const RADIUS_HAND = 50;
+const RADIUS_FINGER = 30;
 
 const extractFrameInfo = (frame, dispNode) => {
     const currentId = frame.id;
@@ -144,7 +146,53 @@ const extractGestureInfo = (frame, dispNode) => {
 
 };
 
+const resetCanvas = (ctx) => {
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+};
+
+const drawHands = (ctx, frame) => {
+
+    for (let i = 0, numHands = frame.hands.length; i < numHands; i++) {
+        const hand = frame.hands[i];
+        const handPosX = window.innerWidth / 2 + hand.stabilizedPalmPosition[0] * 3;
+        const handPosY = window.innerHeight - (hand.stabilizedPalmPosition[1] * 3);
+
+        drawCircle(ctx, handPosX, handPosY, RADIUS_HAND);
+    }
+
+};
+
+const drawFingers = (ctx, frame) => {
+
+};
+
+const resizeCanvas = (canvas, width, height) => {
+    canvas.setAttribute('width', width);
+    canvas.setAttribute('height', height);
+};
+
+const drawCircle = (ctx, posX, posY, radius) => {
+    ctx.fillStyle = 'rgb(192, 80, 77)';
+    ctx.beginPath();
+    ctx.arc(posX, posY, radius, 0, Math.PI * 2, false);
+    console.log(posX + ' ' + posY + ' ' + radius + ' ' + 0 + ' ' + Math.PI * 2 + ' ' + false)
+    ctx.fill();
+};
+
 window.addEventListener('load', () => {
+
+    const drawCanvas = document.getElementById('drawCanvas');
+    // drawCanvas.setAttribute('width', window.innerWidth);
+    // drawCanvas.setAttribute('height', window.innerHeight);
+
+    resizeCanvas(drawCanvas, window.innerWidth, window.innerHeight);
+
+    const drawContext = drawCanvas.getContext('2d');
+    resetCanvas(drawContext);
+
+    window.addEventListener('resize', () => {
+        resizeCanvas(drawCanvas, window.innerWidth, window.innerHeight);
+    });
 
     const frameDisplay = document.getElementById('frameInfo');
     const handDisplay = document.getElementById('handInfo');
@@ -158,6 +206,9 @@ window.addEventListener('load', () => {
         extractHandInfo(frame, handDisplay);
         extractFingerInfo(frame, fingerDisplay);
         extractGestureInfo(frame, gestureDisplay);
+
+        resetCanvas(drawContext);
+        drawHands(drawContext, frame);
     });
 
     const connectDisplay = document.getElementById('connectInfo');
@@ -169,4 +220,6 @@ window.addEventListener('load', () => {
         connectDisplay.textContent = 'Disconnect';
         controller.disconnect();
     });
+
+    controller.connect();
 });

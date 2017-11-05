@@ -3,27 +3,49 @@
 
 <head>
     <title>leapjs-example</title>
-    <script src='./js/libs/leap-0.6.4.js'></script>
-    <script src='./js/main.js'></script>
+    <script src="./js/libs/leap-0.6.4.js"></script>
+    <script src="./js/main.js"></script>
+    <style>
+    .disp {
+        clear: both;
+    }
+
+    #drawArea {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background-color: #e8e8e8;
+    }
+
+    #body {
+        position: relative;
+        top: 0;
+        left: 0;
+    }
+    </style>
 </head>
 
 <body>
-    <div id='connectCond'>
-        <button id='connectBtn'>Connect</button>
-        <button id='disconnectBtn'>Disconnect</button>
-        <div id='connectInfo'></div>
+    <div id="drawArea">
+        <canvas id="drawCanvas"></canvas>
     </div>
-    <div id='dump'>
-    	<h2>Frame:</h2>
-        <div id='frameInfo' style='clear:both;'></div>
-        <h2>Hands:</h2>
-        <div id='handInfo' style='clear:both;'></div>
-        <h2>Fingers:</h2>
-        <div id='fingerInfo' style='clear:both;'></div>
-        <h2>Gestures:</h2>
-        <div id='gestureInfo' style='clear:both;'></div>
-    </div>
-    <div id='draw'></div>
+    <section id="body">
+        <div id="connectCond">
+            <button id="connectBtn">Connect</button>
+            <button id="disconnectBtn">Disconnect</button>
+            <div id="connectInfo"></div>
+        </div>
+        <div id="dump">
+            <h2>Frame:</h2>
+            <div id="frameInfo" class="disp"></div>
+            <h2>Hands:</h2>
+            <div id="handInfo" class="disp"></div>
+            <h2>Fingers:</h2>
+            <div id="fingerInfo" class="disp"></div>
+            <h2>Gestures:</h2>
+            <div id="gestureInfo" class="disp"></div>
+        </div>
+    </section>
 </body>
 
 </html>
