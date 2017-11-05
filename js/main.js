@@ -4,6 +4,11 @@ const FINGER_TYPE = ['thumb', 'index', 'middle', 'ring', 'pinky'];
 const RADIUS_HAND = 50;
 const RADIUS_FINGER = 30;
 
+const basePos = {
+    xAxis: window.innerWidth / 2,
+    yAxis: window.innerHeight,
+};
+
 const extractFrameInfo = (frame, dispNode) => {
     const currentId = frame.id;
     const currentFrameRate = frame.currentFrameRate;
@@ -154,19 +159,30 @@ const drawHands = (ctx, frame) => {
 
     for (let i = 0, numHands = frame.hands.length; i < numHands; i++) {
         const hand = frame.hands[i];
-        const handPosX = window.innerWidth / 2 + hand.stabilizedPalmPosition[0] * 3;
-        const handPosY = window.innerHeight - (hand.stabilizedPalmPosition[1] * 3);
+        const handPosX = basePos.xAxis + hand.stabilizedPalmPosition[0] * 3;
+        const handPosY = basePos.yAxis - (hand.stabilizedPalmPosition[1] * 3);
 
         drawCircle(ctx, handPosX, handPosY, RADIUS_HAND);
+
+        drawFingers(ctx, hand.fingers);
     }
 
 };
 
-const drawFingers = (ctx, frame) => {
+const drawFingers = (ctx, fingers) => {
+    fingers.forEach((finger) => {
+        const fingerPosX = basePos.xAxis + finger.tipPosition[0] * 3;
+        const fingerPosY = basePos.yAxis - (finger.tipPosition[1] * 3);
 
+        drawCircle(ctx, fingerPosX, fingerPosY, RADIUS_FINGER);
+    });
 };
 
 const resizeCanvas = (canvas, width, height) => {
+
+    basePos.xAxis = width / 2;
+    basePos.yAxis = height;
+
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height);
 };
@@ -175,7 +191,6 @@ const drawCircle = (ctx, posX, posY, radius) => {
     ctx.fillStyle = 'rgb(192, 80, 77)';
     ctx.beginPath();
     ctx.arc(posX, posY, radius, 0, Math.PI * 2, false);
-    console.log(posX + ' ' + posY + ' ' + radius + ' ' + 0 + ' ' + Math.PI * 2 + ' ' + false)
     ctx.fill();
 };
 
